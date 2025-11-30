@@ -4,8 +4,8 @@ you can optionally preprocess the image, however this is only recommended if the
 
 how to use
 ----------------------
-put a single PDF file into the pdf in folder
-run the py file in command line
+put a PDF(s) into the pdf in folder
+run main.py in command line
 wait for outputted text in text_out
 you can also view your processed images in img_out
 
@@ -24,5 +24,6 @@ numpy
 pillow
 pytesseract
 pdf2image
+
 
 
