@@ -27,14 +27,14 @@ class OCRProcessor:
         """
         grayscale image
         """
-        self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+        if len(self.img.shape) ==3:
+            self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
         return self.img
     
     def bw(self):
         """
         black & white threshold
         """
-        # ensure grayscale first
         if len(self.img.shape) == 3:
             self.gray()
         _, self.img = cv2.threshold(self.img, 200, 255, cv2.THRESH_BINARY)
@@ -61,7 +61,8 @@ class OCRProcessor:
         image = cv2.dilate(image, kernel, iterations=1)
         self.img = cv2.bitwise_not(image)
         return self.img
-    def remove_borders(self, shrink=0): # Changed default shrink to 0 to prevent cutting off text
+    
+    def remove_borders(self, shrink=0): 
         """
         Removes whitespace borders by cropping to the combined area of all text/content.
         """
@@ -70,21 +71,17 @@ class OCRProcessor:
         else:
             gray = self.img
 
-        # 1. Edge Detection
         edges = cv2.Canny(gray, 50, 150)
 
-        # 2. Dilation to connect broken text characters into blocks
         kernel = np.ones((5,5), np.uint8)
         dilated = cv2.dilate(edges, kernel, iterations=3)
 
-        # 3. Find Contours
         contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         if len(contours) == 0:
             return self.img
 
-        # 4. Find the global bounding box (min_x, min_y, max_x, max_y)
-        # Initialize with the image dimensions
+
         h_img, w_img = self.img.shape[:2]
         min_x, min_y = w_img, h_img
         max_x, max_y = 0, 0
@@ -92,12 +89,10 @@ class OCRProcessor:
         found_content = False
 
         for cnt in contours:
-            # Filter out tiny noise (e.g., dust specks)
             if cv2.contourArea(cnt) > 200: 
                 found_content = True
                 x, y, w, h = cv2.boundingRect(cnt)
                 
-                # Update global bounds
                 min_x = min(min_x, x)
                 min_y = min(min_y, y)
                 max_x = max(max_x, x + w)
@@ -106,18 +101,15 @@ class OCRProcessor:
         if not found_content:
             return self.img
 
-        # 5. Apply "shrink" (or padding if negative)
-        # Note: 'shrink' cuts INTO the content. If you want padding, use negative shrink.
+       
         x_new = max(0, min_x + shrink)
         y_new = max(0, min_y + shrink)
         
-        # Calculate new width/height based on the max coordinates
         w_new = (max_x - shrink) - x_new
         h_new = (max_y - shrink) - y_new
 
-        # 6. Safety check to ensure we don't crop to invalid dimensions
         if w_new <= 0 or h_new <= 0:
-            return self.img # Return original if crop is invalid
+            return self.img 
 
         self.img = self.img[y_new:y_new+h_new, x_new:x_new+w_new]
 
@@ -128,7 +120,12 @@ class OCRProcessor:
         compute skew angle
         """
         newImage = self.img.copy()
-        gray = cv2.cvtColor(newImage, cv2.COLOR_BGR2GRAY)
+
+        if len(newImage.shape) ==3:
+            gray = cv2.cvtColor(newImage, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = newImage
+        
         blur = cv2.GaussianBlur(gray, (9, 9), 0)
         thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
 
@@ -166,10 +163,9 @@ class OCRProcessor:
         angle = self.getSkewAngle()
         corrected_angle = -angle
         self.rotateImage(corrected_angle)
+    
 
-    
-        return self.img
-    
+
 
 
 

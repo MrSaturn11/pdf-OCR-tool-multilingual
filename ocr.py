@@ -8,18 +8,21 @@ def OCR_(output_folder="./text_out", input_folder="./img_out"):
     "(2) Russian \n"
     "(3) Chinese (Simplified)\n"
     "(4) Chinese (Traditional)\n"
-    "(5) All (not recommended for single language documents)\n")
+    "(5) Arabic \n"
+    "(6) All (not recommended for single language documents)\n")
 
     if what_lang == "1":
         lang="eng"
     elif what_lang == "2":
         lang="rus"
     elif what_lang == "3":
-        lang="chi_sim"
+        lang="chi_sim+eng"
     elif what_lang == "4":
-        lang="chi_tra"
+        lang="chi_tra+eng"
     elif what_lang == "5":
-        lang="eng+chi_tra+chi_sim+rus"
+        lang="ara+eng"
+    elif what_lang == "6":
+        lang="ara+eng+chi_tra+chi_sim+rus"
     else:
         print("Please input a number")
         return
@@ -49,7 +52,7 @@ def OCR_(output_folder="./text_out", input_folder="./img_out"):
 
             print(f"OCR'ing {img_name} please wait")
             im = Image.open(img_path)
-            text = pytesseract.image_to_string(im, lang=lang, config="--psm 3")
+            text = pytesseract.image_to_string(im, lang=lang, config="--psm 6")
 
             with open(txt_path, "w", encoding="utf-8") as f:
                 f.write(text)

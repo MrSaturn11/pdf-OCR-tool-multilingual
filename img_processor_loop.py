@@ -10,7 +10,7 @@ def preprocess_loop (input_folder = "img_out"):
 
             processor = OCRProcessor(path)
     
-            processor.deskew()
+            #processor.deskew()
             processor.bw()
             processor.gray()
             processor.noise_removal()
@@ -18,4 +18,4 @@ def preprocess_loop (input_folder = "img_out"):
             processor.remove_borders()
             cv2.imwrite(path,processor.img)
 
-            print("Preprocessing complete.\n")
+            print("Preprocessing complete.")

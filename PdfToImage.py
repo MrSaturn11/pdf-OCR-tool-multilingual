@@ -5,7 +5,8 @@ def pdf2images(pdf_folder= "./pdf_in",
                output_folder="img_out",
                poppler_path=r"C:\\Program Files\\poppler-25.11.0\\Library\\bin"
                ):
-    
+    os.makedirs(pdf_folder, exist_ok=True)
+
     os.makedirs(output_folder, exist_ok=True)
     
     for pdf in os.listdir(pdf_folder):
@@ -23,7 +24,3 @@ def pdf2images(pdf_folder= "./pdf_in",
                 out_path = os.path.join(pdf_img_folder, page_name)
                 page.save(out_path,'JPEG')
     print("Complete")
-                
-
-
-
