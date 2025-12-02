@@ -2,10 +2,13 @@ Command line tool for converting PDFs to images then running OCR on the image
 you can optionally preprocess the image, however this is only recommended if the image is in a bad quality
 
 
+
+
 how to use
 ----------------------
-put a single PDF file into the pdf in folder
-run the py file in command line
+make sure the working directory has a folder called pdf_in
+put PDFs into the pdf_in folder
+run main.py in command line
 wait for outputted text in text_out
 you can also view your processed images in img_out
 
@@ -24,5 +27,5 @@ numpy
 pillow
 pytesseract
 pdf2image
-
+poppler
 
